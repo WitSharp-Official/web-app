@@ -1,7 +1,8 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { put, takeLatest } from "redux-saga/effects";
+import { put, takeLatest, call } from "redux-saga/effects";
 import { getUserByToken } from "./authCrud";
+import { myFirebase, googleAuth } from "../../../../firebase/firebase";
 
 export const actionTypes = {
   Login: "[Login] Action",
@@ -71,7 +72,17 @@ export const actions = {
 
 export function* saga() {
   yield takeLatest(actionTypes.Login, function* loginSaga() {
-    yield put(actions.requestUser());
+    try {
+      const auth = myFirebase.auth();
+      const result = yield call([auth, auth.signInWithPopup], googleAuth);
+
+      console.log(JSON.stringify(result.user));
+    } catch (error) {
+      // const error_message = { code: error.code, message: error.message };
+      console.log(error.message);
+      // yield put({ type: AUTHENTICATION_FAILED, error: error_message });
+    }
+    // yield put(actions.requestUser());
   });
 
   yield takeLatest(actionTypes.Register, function* registerSaga() {
