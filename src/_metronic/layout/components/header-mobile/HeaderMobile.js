@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
-import { Link } from "react-router-dom";
 import objectPath from "object-path";
-import { toAbsoluteUrl } from "../../../_helpers";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
+import { Brand } from "../brand/Brand";
 
 export function HeaderMobile() {
   const uiService = useHtmlClassService();
@@ -11,7 +10,7 @@ export function HeaderMobile() {
     return {
       asideDisplay: objectPath.get(uiService.config, "aside.self.display"),
       headerMobileCssClasses: uiService.getClasses("header_mobile", true),
-      headerMobileAttributes: uiService.getAttributes("header_mobile"),
+      headerMobileAttributes: uiService.getAttributes("header_mobile")
     };
   }, [uiService]);
 
@@ -19,20 +18,16 @@ export function HeaderMobile() {
     <>
       {/*begin::Header Mobile*/}
       <div
+        style={{ background: "#F6f6f6" }}
         id="kt_header_mobile"
-        className={`header-mobile ${layoutProps.headerMobileCssClasses}`}
+        className={`header-mobile shadow ${layoutProps.headerMobileCssClasses}`}
         {...layoutProps.headerMobileAttributes}
       >
         {/* begin::Logo */}
-        <Link to="/">
-          <img
-            alt="Logo"
-            className="logo-default max-h-30px"
-            src={toAbsoluteUrl("/media/logos/logo.svg")}
-          />
-        </Link>
-        {/* end::Logo */}
-
+        <div className="p-2">
+          <Brand />
+          {/* end::Logo */}
+        </div>
         {/* begin::Toolbar */}
         <div className="d-flex align-items-center">
           {layoutProps.asideDisplay && (

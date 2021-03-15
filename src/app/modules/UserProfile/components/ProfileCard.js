@@ -7,7 +7,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../_metronic/_helpers";
 import {
   DropdownCustomToggler,
-  DropdownMenu4,
+  DropdownMenu4
 } from "../../../../_metronic/_partials/dropdowns";
 
 export function ProfileCard() {
@@ -49,7 +49,7 @@ export function ProfileCard() {
                 <div className="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
                   <div
                     className="symbol-label"
-                    style={{ backgroundImage: `url(${user.pic})` }}
+                    style={{ backgroundImage: `url(${user.photoURL})` }}
                   ></div>
                   {/* style="background-i
                   mage:url('/metronic/theme/html/demo1/dist/assets/media/users/300_21.jpg')" */}
@@ -60,10 +60,10 @@ export function ProfileCard() {
                     href="#"
                     className="font-weight-bolder font-size-h5 text-dark-75 text-hover-primary"
                   >
-                    {user.firstname} {user.lastname}
+                    {user.displayName}
                   </a>
-                  <div className="text-muted">{user.occupation}</div>
-                  <div className="mt-2">
+                  <div className="text-muted">{user.role}</div>
+                  {/* <div className="mt-2">
                     <a
                       href="#"
                       className="btn btn-sm btn-primary font-weight-bold mr-2 py-2 px-3 px-xxl-5 my-1"
@@ -76,7 +76,7 @@ export function ProfileCard() {
                     >
                       Follow
                     </a>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {/* end::User */}
@@ -94,7 +94,7 @@ export function ProfileCard() {
                 </div>
                 <div className="d-flex align-items-center justify-content-between">
                   <span className="font-weight-bold mr-2">Location:</span>
-                  <span className="text-muted">{user.address.city}</span>
+                  <span className="text-muted">{user.uid}</span>
                 </div>
               </div>
               {/* end::Contact */}

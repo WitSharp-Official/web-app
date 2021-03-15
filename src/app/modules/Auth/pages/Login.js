@@ -1,156 +1,114 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { connect } from "react-redux";
+import { useSelector, shallowEqual, connect, useDispatch } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
-import { login } from "../_redux/authCrud";
-
-/*
-  INTL (i18n) docs:
-  https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedmessage
-*/
-
-/*
-  Formik+YUP:
-  https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
-*/
-
-const initialValues = {
-  email: "admin@demo.com",
-  password: "demo",
-};
+import { authActions } from "../../../store/actions/authActions";
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../../_metronic/_helpers/AssetsHelpers";
+import { useForm } from "react-hook-form";
 
 function Login(props) {
   const { intl } = props;
-  const [loading, setLoading] = useState(false);
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
-    password: Yup.string()
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
-  });
+  const { loading, error, user } = useSelector(
+    state => state.auth,
+    shallowEqual
+  );
 
-  const enableLoading = () => {
-    setLoading(true);
+  const { register, handleSubmit, errors } = useForm();
+
+  const onSubmit = data => {
+    const { email, password } = data;
+    console.log(email, "  ", password);
+    dispatch(authActions.loginWithEmail({ email, password }));
   };
 
-  const disableLoading = () => {
-    setLoading(false);
+  const dispatch = useDispatch();
+
+  const loginWithGoogle = () => {
+    dispatch(authActions.loginWithGoogle());
   };
-
-  const getInputClasses = (fieldname) => {
-    if (formik.touched[fieldname] && formik.errors[fieldname]) {
-      return "is-invalid";
-    }
-
-    if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-      return "is-valid";
-    }
-
-    return "";
+  const loginWithFacebook = () => {
+    dispatch(authActions.loginWithFacebook());
   };
-
-  const formik = useFormik({
-    initialValues,
-    validationSchema: LoginSchema,
-    onSubmit: (values, { setStatus, setSubmitting }) => {
-      enableLoading();
-      setTimeout(() => {
-        login(values.email, values.password)
-          .then(({ data: { accessToken } }) => {
-            disableLoading();
-            props.login(accessToken);
-          })
-          .catch(() => {
-            disableLoading();
-            setSubmitting(false);
-            setStatus(
-              intl.formatMessage({
-                id: "AUTH.VALIDATION.INVALID_LOGIN",
-              })
-            );
-          });
-      }, 1000);
-    },
-  });
 
   return (
-    <div className="login-form login-signin" id="kt_login_signin_form">
+    <div className="login-form login-signin card p-5" id="kt_login_signin_form">
       {/* begin::Head */}
-      <div className="text-center mb-10 mb-lg-20">
+      <div className="text-center">
         <h3 className="font-size-h1">
           <FormattedMessage id="AUTH.LOGIN.TITLE" />
         </h3>
         <p className="text-muted font-weight-bold">
-          Enter your username and password
+          Login with your preferred method
         </p>
       </div>
       {/* end::Head */}
+      <div className="row center mt-5 mb-3">
+        <div className="login-icon col shadow" onClick={loginWithGoogle}>
+          <span className="svg-icon svg-icon-lg svg-icon-white">
+            <SVG
+              className="svg"
+              src={toAbsoluteUrl("/media/svg/Logos/google-icon.svg")}
+            />
+          </span>
+        </div>
+        <div className="login-icon col shadow" onClick={loginWithFacebook}>
+          <span className="svg-icon svg-icon-lg svg-icon-white">
+            <SVG
+              className="svg"
+              src={toAbsoluteUrl("/media/svg/Logos/facebook-2.svg")}
+            />
+          </span>
+        </div>
+      </div>
+      {error && (
+        <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
+          <div className="alert-text font-weight-bold">{error}</div>
+        </div>
+      )}
 
       {/*begin::Form*/}
       <form
-        onSubmit={formik.handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="form fv-plugins-bootstrap fv-plugins-framework"
       >
-        {formik.status ? (
-          <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
-            <div className="alert-text font-weight-bold">{formik.status}</div>
-          </div>
-        ) : (
-          <div className="mb-10 alert alert-custom alert-light-info alert-dismissible">
-            <div className="alert-text ">
-              Use account <strong>admin@demo.com</strong> and password{" "}
-              <strong>demo</strong> to continue.
-            </div>
-          </div>
-        )}
-
         <div className="form-group fv-plugins-icon-container">
           <input
             placeholder="Email"
             type="email"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "email"
-            )}`}
+            className={`form-control form-control-solid h-auto py-5 px-6 ${errors.email &&
+              "is-invalid"}`}
             name="email"
-            {...formik.getFieldProps("email")}
+            ref={register({
+              required: true,
+              pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            })}
           />
-          {formik.touched.email && formik.errors.email ? (
+          {errors.email && (
             <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.email}</div>
+              <div className="fv-help-block">
+                Email should be at least 3 character long*
+              </div>
             </div>
-          ) : null}
+          )}
         </div>
         <div className="form-group fv-plugins-icon-container">
           <input
             placeholder="Password"
             type="password"
-            className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-              "password"
-            )}`}
+            className={`form-control form-control-solid h-auto py-5 px-6 ${errors.password &&
+              "is-invalid"}`}
             name="password"
-            {...formik.getFieldProps("password")}
+            ref={register({ required: true, minLength: 8, maxLength: 50 })}
           />
-          {formik.touched.password && formik.errors.password ? (
+          {errors.password && (
             <div className="fv-plugins-message-container">
-              <div className="fv-help-block">{formik.errors.password}</div>
+              <div className="fv-help-block">
+                Password should be at least 8 character long*
+              </div>
             </div>
-          ) : null}
+          )}
         </div>
         <div className="form-group d-flex flex-wrap justify-content-between align-items-center">
           <Link
@@ -161,9 +119,9 @@ function Login(props) {
             <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
           </Link>
           <button
+            disabled={loading || user}
             id="kt_login_signin_submit"
             type="submit"
-            disabled={formik.isSubmitting}
             className={`btn btn-primary font-weight-bold px-9 py-4 my-3`}
           >
             <span>Sign In</span>
@@ -176,4 +134,4 @@ function Login(props) {
   );
 }
 
-export default injectIntl(connect(null, auth.actions)(Login));
+export default injectIntl(Login);

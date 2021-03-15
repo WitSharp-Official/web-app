@@ -29,7 +29,7 @@ export default function BasePage() {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/dashboard" />
+          <Redirect exact from="/" to="/user-profile" />
         }
         <ContentRoute path="/dashboard" component={DashboardPage} />
         <ContentRoute path="/builder" component={BuilderPage} />

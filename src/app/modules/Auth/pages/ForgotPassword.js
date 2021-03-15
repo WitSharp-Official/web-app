@@ -1,121 +1,84 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import { connect } from "react-redux";
-import { Link, Redirect } from "react-router-dom";
-import * as Yup from "yup";
+import React from "react";
+import { useSelector, shallowEqual, connect, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+
 import { injectIntl } from "react-intl";
 import * as auth from "../_redux/authRedux";
-import { requestPassword } from "../_redux/authCrud";
-
-const initialValues = {
-  email: "",
-};
+import { authActions } from "../../../store/actions/authActions";
+import { useForm } from "react-hook-form";
 
 function ForgotPassword(props) {
-  const { intl } = props;
-  const [isRequested, setIsRequested] = useState(false);
-  const ForgotPasswordSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Wrong email format")
-      .min(3, "Minimum 3 symbols")
-      .max(50, "Maximum 50 symbols")
-      .required(
-        intl.formatMessage({
-          id: "AUTH.VALIDATION.REQUIRED_FIELD",
-        })
-      ),
-  });
+  const { register, handleSubmit, errors } = useForm();
+  const { loading, error, user } = useSelector(
+    state => state.auth,
+    shallowEqual
+  );
+  const dispatch = useDispatch();
 
-  const getInputClasses = (fieldname) => {
-    if (formik.touched[fieldname] && formik.errors[fieldname]) {
-      return "is-invalid";
-    }
-
-    if (formik.touched[fieldname] && !formik.errors[fieldname]) {
-      return "is-valid";
-    }
-
-    return "";
+  const onSubmit = data => {
+    const { email } = data;
+    dispatch(authActions.forgotPassword({ email }));
   };
-
-  const formik = useFormik({
-    initialValues,
-    validationSchema: ForgotPasswordSchema,
-    onSubmit: (values, { setStatus, setSubmitting }) => {
-      requestPassword(values.email)
-        .then(() => setIsRequested(true))
-        .catch(() => {
-          setIsRequested(false);
-          setSubmitting(false);
-          setStatus(
-            intl.formatMessage(
-              { id: "AUTH.VALIDATION.NOT_FOUND" },
-              { name: values.email }
-            )
-          );
-        });
-    },
-  });
 
   return (
     <>
-      {isRequested && <Redirect to="/auth" />}
-      {!isRequested && (
-        <div className="login-form login-forgot" style={{ display: "block" }}>
-          <div className="text-center mb-10 mb-lg-20">
-            <h3 className="font-size-h1">Forgotten Password ?</h3>
-            <div className="text-muted font-weight-bold">
-              Enter your email to reset your password
-            </div>
+      <div className="login-form login-forgot" style={{ display: "block" }}>
+        <div className="text-center mb-10 mb-lg-20">
+          <h3 className="font-size-h1">Forgotten Password ?</h3>
+          <div className="text-muted font-weight-bold">
+            Enter your email to reset your password
           </div>
-          <form
-            onSubmit={formik.handleSubmit}
-            className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
-          >
-            {formik.status && (
-              <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
-                <div className="alert-text font-weight-bold">
-                  {formik.status}
+        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="form fv-plugins-bootstrap fv-plugins-framework animated animate__animated animate__backInUp"
+        >
+          {error && (
+            <div className="mb-10 alert alert-custom alert-light-danger alert-dismissible">
+              <div className="alert-text font-weight-bold">{error}</div>
+            </div>
+          )}
+          <div className="form-group fv-plugins-icon-container">
+            <input
+              placeholder="Email"
+              type="email"
+              className={`form-control form-control-solid h-auto py-5 px-6 ${errors.email &&
+                "is-invalid"}`}
+              name="email"
+              ref={register({
+                required: true,
+                pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              })}
+            />
+            {errors.email && (
+              <div className="fv-plugins-message-container">
+                <div className="fv-help-block">
+                  Email should be at least 3 character long*
                 </div>
               </div>
             )}
-            <div className="form-group fv-plugins-icon-container">
-              <input
-                type="email"
-                className={`form-control form-control-solid h-auto py-5 px-6 ${getInputClasses(
-                  "email"
-                )}`}
-                name="email"
-                {...formik.getFieldProps("email")}
-              />
-              {formik.touched.email && formik.errors.email ? (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">{formik.errors.email}</div>
-                </div>
-              ) : null}
-            </div>
-            <div className="form-group d-flex flex-wrap flex-center">
+          </div>
+          <div className="form-group d-flex flex-wrap flex-center">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
+            >
+              <span>Submit</span>
+              {loading && <span className="ml-3 spinner spinner-white"></span>}
+            </button>
+
+            <Link to="/auth/login">
               <button
-                id="kt_login_forgot_submit"
-                type="submit"
-                className="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
-                disabled={formik.isSubmitting}
+                type="button"
+                className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
               >
-                Submit
+                Cancel
               </button>
-              <Link to="/auth">
-                <button
-                  type="button"
-                  id="kt_login_forgot_cancel"
-                  className="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-4"
-                >
-                  Cancel
-                </button>
-              </Link>
-            </div>
-          </form>
-        </div>
-      )}
+            </Link>
+          </div>
+        </form>
+      </div>
     </>
   );
 }

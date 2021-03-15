@@ -7,6 +7,7 @@ import "firebase/auth";
 // require('firebase/firestore');
 
 const myFirebase = firebase.initializeApp(firebaseConfig);
+const firestoreDB = firebase.firestore();
 const googleAuth = new firebase.auth.GoogleAuthProvider();
 googleAuth.addScope("profile");
 googleAuth.addScope("email");
@@ -36,4 +37,4 @@ myFirebase
   });
 //database
 // rsf.firestore.
-export { googleAuth, myFirebase };
+export { googleAuth, myFirebase, firestoreDB };

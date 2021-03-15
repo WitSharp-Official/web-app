@@ -21,29 +21,39 @@ export function AuthPage() {
           <div
             className="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-10 p-lg-10"
             style={{
-              backgroundImage: `url(${toAbsoluteUrl("/media/bg/bg-4.jpg")})`,
+              backgroundImage: `url(${toAbsoluteUrl("/media/bg/bg-4.jpg")})`
             }}
           >
             {/*begin: Aside Container*/}
             <div className="d-flex flex-row-fluid flex-column justify-content-between">
               {/* start:: Aside header */}
-              <Link to="/" className="flex-column-auto mt-5 pb-lg-0 pb-10">
-                <img
-                  alt="Logo"
-                  className="max-h-100px"
-                  src={toAbsoluteUrl("/media/logos/logo.svg")}
-                />
-              </Link>
+
               {/* end:: Aside header */}
 
               {/* start:: Aside content */}
               <div className="flex-column-fluid d-flex flex-column justify-content-center">
-                <h3 className="font-size-h1 mb-5 text-white">
-                  Welcome to Metronic!
+                <div className="max-w-150px pb-3">
+                  <Link to="/">
+                    <img
+                      alt="Logo"
+                      className="max-h-150px"
+                      src={toAbsoluteUrl("/media/logos/logo.svg")}
+                    />
+                  </Link>
+                </div>
+                <h3 className="font-size-h3 mb-5 text-white">
+                  Find upto date pathways for your career goals with an on call
+                  instructor. Never feel lost again over the internet.
+                  <br />
+                  Join WitSharp
+                  {/* Welcome to the most interactive platform, that helps you learn
+                  anything by yourself. We use Co-herent learning system with
+                  MOOCs to make sure you reach goals and be happy while doing
+                  it. */}
                 </h3>
                 <p className="font-weight-lighter text-white opacity-80">
-                  The ultimate Bootstrap & React 16 admin theme framework for
-                  next generation web apps.
+                  #fast-track-career #learn-new-skills #self-paced-courses
+                  #instructor-support #international-community
                 </p>
               </div>
               {/* end:: Aside content */}
@@ -51,7 +61,7 @@ export function AuthPage() {
               {/* start:: Aside footer for desktop */}
               <div className="d-none flex-column-auto d-lg-flex justify-content-between mt-10">
                 <div className="opacity-70 font-weight-bold	text-white">
-                  &copy; 2020 Metronic
+                  &copy; 2021 WitSharp
                 </div>
                 <div className="d-flex">
                   <Link to="/terms" className="text-white">
@@ -109,7 +119,7 @@ export function AuthPage() {
             {/* begin::Mobile footer */}
             <div className="d-flex d-lg-none flex-column-auto flex-column flex-sm-row justify-content-between align-items-center mt-5 p-5">
               <div className="text-dark-50 font-weight-bold order-2 order-sm-1 my-2">
-                &copy; 2020 Metronic
+                &copy; 2020 WitSharp
               </div>
               <div className="d-flex order-1 order-sm-2 my-2">
                 <Link to="/terms" className="text-dark-75 text-hover-primary">

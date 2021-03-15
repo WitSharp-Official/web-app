@@ -52,9 +52,9 @@ export function QuickUser() {
               href="#"
               className="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"
             >
-              {user.firstname} {user.lastname}
+              {user.displayName} {user.displayName}
             </a>
-            <div className="text-muted mt-1">{user.occupation}</div>
+            <div className="text-muted mt-1">{user.role}</div>
             <div className="navi mt-2">
               <a href="#" className="navi-item">
                 <span className="navi-link p-0 pb-2">

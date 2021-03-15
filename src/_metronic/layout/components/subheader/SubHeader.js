@@ -8,7 +8,7 @@ import { QuickActions } from "./components/QuickActions";
 import { BreadCrumbs } from "./components/BreadCrumbs";
 import {
   getBreadcrumbsAndTitle,
-  useSubheader,
+  useSubheader
 } from "../../_core/MetronicSubheader";
 import { useHtmlClassService } from "../../_core/MetronicLayout";
 
@@ -29,7 +29,7 @@ export function SubHeader() {
       subheaderContainerCssClasses: uiService.getClasses(
         "subheader_container",
         true
-      ),
+      )
     };
   }, [uiService]);
 
@@ -55,7 +55,7 @@ export function SubHeader() {
   return (
     <div
       id="kt_subheader"
-      className={`subheader py-3 py-lg-8 ${layoutProps.subheaderCssClasses}`}
+      className={`subheader sub-header-background py-3 py-lg-8 ${layoutProps.subheaderCssClasses}`}
     >
       <div
         className={`${layoutProps.subheaderContainerCssClasses} d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap`}

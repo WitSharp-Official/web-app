@@ -8,7 +8,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import * as _redux from "./redux";
-import store, { persistor } from "./redux/store";
+import store from "./app/store/store.js";
 import App from "./app/App";
 import "./index.scss"; // Standard version
 // import "./sass/style.react.rtl.css"; // RTL version
@@ -24,7 +24,7 @@ import {
   MetronicSplashScreenProvider,
   MetronicSubheaderProvider
 } from "./_metronic/layout";
-import {MetronicI18nProvider} from "./_metronic/i18n";
+import { MetronicI18nProvider } from "./_metronic/i18n";
 
 /**
  * Base URL of the website.
@@ -46,14 +46,14 @@ const { PUBLIC_URL } = process.env;
  *
  * @see https://github.com/axios/axios#interceptors
  */
-_redux.setupAxios(axios, store);
+// _redux.setupAxios(axios, store);
 
 ReactDOM.render(
   <MetronicI18nProvider>
     <MetronicLayoutProvider>
       <MetronicSubheaderProvider>
         <MetronicSplashScreenProvider>
-          <App store={store} persistor={persistor} basename={PUBLIC_URL} />
+          <App store={store} basename={PUBLIC_URL} />
         </MetronicSplashScreenProvider>
       </MetronicSubheaderProvider>
     </MetronicLayoutProvider>

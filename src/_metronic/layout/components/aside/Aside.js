@@ -46,19 +46,16 @@ export function Aside() {
         uiService.config,
         "extras.languages.display"
       ),
-      extrasUserDisplay: objectPath.get(
-        uiService.config,
-        "extras.user.display"
-      ),
+      extrasUserDisplay: objectPath.get(uiService.config, "extras.user.display")
     };
   }, [uiService]);
 
   const tabs = {
     tabId1: "kt_aside_tab_1",
-    tabId2: "kt_aside_tab_2",
+    tabId2: "kt_aside_tab_2"
   };
   const [activeTab, setActiveTab] = useState(tabs.tabId1);
-  const handleTabChange = (id) => {
+  const handleTabChange = id => {
     setActiveTab(id);
     const asideWorkspace = KTUtil.find(
       document.getElementById("kt_aside"),
@@ -79,7 +76,7 @@ export function Aside() {
         {/* begin::Primary */}
         <div
           className="aside-primary d-flex flex-column align-items-center flex-row-auto"
-          style={{ backgroundColor: "#181d34" }}
+          style={{ backgroundColor: "#F2FAFF" }}
         >
           <Brand />
           {/* begin::Nav Wrapper */}
@@ -93,13 +90,11 @@ export function Aside() {
                 data-placement="rigth"
                 data-container="body"
                 data-boundary="window"
-                title="Metronic Features"
+                title="WitSharp Menu"
               >
                 <OverlayTrigger
                   placement="right"
-                  overlay={
-                    <Tooltip id="metronic-features">Metronic Features</Tooltip>
-                  }
+                  overlay={<Tooltip id="metronic-features"></Tooltip>}
                 >
                   <a
                     href="#"
