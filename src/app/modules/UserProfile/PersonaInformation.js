@@ -4,15 +4,16 @@ import { useSelector, shallowEqual, connect, useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ModalProgressBar } from "../../../_metronic/_partials/controls";
-import { toAbsoluteUrl } from "../../../_metronic/_helpers";
+// import { toAbsoluteUrl } from "../../../_metronic/_helpers";
 import * as auth from "../Auth";
 import { useForm } from "react-hook-form";
+import { EditPic } from "./EditPic";
+import { GetInputField } from "./GetInputField";
 
 function PersonaInformation(props) {
   // Fields
   const [pic, setPic] = useState("");
   const dispatch = useDispatch();
-  const { register, handleSubmit, errors } = useForm();
   const { loading, error, user } = useSelector(
     state => state.auth,
     shallowEqual
@@ -93,10 +94,36 @@ function PersonaInformation(props) {
   const removePic = () => {
     setPic("");
   };
+
+  const onSubmit = data => {
+    // const { email, phoneNumber } = data;
+    console.log(data);
+    // dispatch(authActions.loginWithEmail({ email, password }));
+  };
+
+  const methods = useForm();
+  const { handleSubmit, register } = methods;
+  const inputFields = [
+    {
+      fieldName: "displayName",
+      label: "Display Name",
+      placeholder: "Full Name",
+      errorMsg: "Display Name is required",
+      methods: methods
+    },
+    {
+      fieldName: "email",
+      label: "Your Email Address",
+      placeholder: "Email",
+      errorMsg: "Email Name is required",
+      methods: methods
+    }
+  ];
+
   return (
     <form
       className="card card-custom card-stretch"
-      onSubmit={formik.handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
     >
       {loading && <ModalProgressBar />}
 
@@ -114,12 +141,10 @@ function PersonaInformation(props) {
           <button
             type="submit"
             className="btn btn-success mr-2"
-            disabled={
-              formik.isSubmitting || (formik.touched && !formik.isValid)
-            }
+            disabled={loading}
           >
             Save Changes
-            {formik.isSubmitting}
+            {loading && <span className="ml-3 spinner spinner-white"></span>}
           </button>
           <Link
             to="/user-profile/profile-overview"
@@ -140,179 +165,23 @@ function PersonaInformation(props) {
               <h5 className="font-weight-bold mb-6">Info</h5>
             </div>
           </div>
-          <div className="form-group row">
-            <label className="col-xl-3 col-lg-3 col-form-label">Avatar</label>
-            <div className="col-lg-9 col-xl-6">
-              <div
-                className="image-input image-input-outline"
-                id="kt_profile_avatar"
-                style={{
-                  backgroundImage: `url(${user.photoURL}`
-                }}
-              >
-                <div
-                  className="image-input-wrapper"
-                  style={{ backgroundImage: `${user.photoURL}` }}
-                />
-                <label
-                  className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                  data-action="change"
-                  data-toggle="tooltip"
-                  title=""
-                  data-original-title="Change avatar"
-                >
-                  <i className="fa fa-pen icon-sm text-muted"></i>
-                  <input
-                    type="file"
-                    name="photoURL"
-                    accept=".png, .jpg, .jpeg"
-                    ref={register()}
-                  />
-                  {/* <input type="hidden" name="profile_avatar_remove" /> */}
-                </label>
-                <span
-                  className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                  data-action="cancel"
-                  data-toggle="tooltip"
-                  title=""
-                  data-original-title="Cancel avatar"
-                >
-                  <i className="ki ki-bold-close icon-xs text-muted"></i>
-                </span>
-                <span
-                  onClick={removePic}
-                  className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                  data-action="remove"
-                  data-toggle="tooltip"
-                  title=""
-                  data-original-title="Remove avatar"
-                >
-                  <i className="ki ki-bold-close icon-xs text-muted"></i>
-                </span>
-              </div>
-              <span className="form-text text-muted">
-                Allowed file types: png, jpg, jpeg.
-              </span>
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-xl-3 col-lg-3 col-form-label">
-              Display Name
-            </label>
-            <div className="col-lg-9 col-xl-6">
-              <input
-                type="text"
-                placeholder={user.displayName}
-                name="displayName"
-                className={`form-control form-control-lg form-control-solid ${errors.displayName &&
-                  "is-invalid"}`}
-                ref={register({ required: true })}
-              />
-              {errors.displayName && (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">Display Name is required*</div>
-                </div>
-              )}
-            </div>
-          </div>
-
+          <EditPic register={register} photoURL={user.photoURL} />
+          {inputFields.map(field => (
+            <GetInputField
+              key={field.fieldName}
+              name={field.fieldName}
+              error={field.error}
+              label={field.label}
+              placeholder={field.placeholder}
+              errorMsg={field.errorMsg}
+              registerOptions={field.registerOptions}
+              methods={field.methods}
+            />
+          ))}
           <div className="row">
             <label className="col-xl-3"></label>
             <div className="col-lg-9 col-xl-6">
               <h5 className="font-weight-bold mt-10 mb-6">Contact Info</h5>
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-xl-3 col-lg-3 col-form-label">
-              Contact Phone
-            </label>
-            <div className="col-lg-9 col-xl-6">
-              <div className="input-group input-group-lg input-group-solid">
-                <div className="input-group-prepend">
-                  <span className="input-group-text">
-                    <i className="fa fa-phone"></i>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  placeholder={user.phoneNumber}
-                  className={`form-control form-control-lg form-control-solid ${errors.phoneNumber &&
-                    "is-invalid"}`}
-                  name="phoneNumber"
-                  ref={register({
-                    pattern: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/g
-                  })}
-                />
-              </div>
-              {errors.phoneNumber && (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    Please enter a valid phone number*
-                  </div>
-                </div>
-              )}
-              <span className="form-text text-muted">
-                We'll never share your phone with anyone else.
-              </span>
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-xl-3 col-lg-3 col-form-label">
-              Email Address
-            </label>
-            <div className="col-lg-9 col-xl-6">
-              <div className="input-group input-group-lg input-group-solid">
-                <div className="input-group-prepend">
-                  <span className="input-group-text">
-                    <i className="fa fa-at"></i>
-                  </span>
-                </div>
-                <input
-                  type="email"
-                  placeholder={user.email}
-                  className={`form-control form-control-lg form-control-solid ${errors.email &&
-                    "is-invalid"}`}
-                  name="email"
-                  ref={register({
-                    required: true,
-                    pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                  })}
-                />
-              </div>
-              {errors.phoneNumber && (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    Please enter a valid email*
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="col-lg-9 col-xl-6">
-              <div className="input-group input-group-lg input-group-solid">
-                <div className="input-group-prepend">
-                  <span className="input-group-text">
-                    <i className="fa fa-at"></i>
-                  </span>
-                </div>
-                <input
-                  type="status"
-                  placeholder={user.email}
-                  className={`form-control form-control-lg form-control-solid ${errors.email &&
-                    "is-invalid"}`}
-                  name="email"
-                  ref={register({
-                    required: true,
-                    pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                  })}
-                />
-              </div>
-              {errors.phoneNumber && (
-                <div className="fv-plugins-message-container">
-                  <div className="fv-help-block">
-                    Please enter a valid email*
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
