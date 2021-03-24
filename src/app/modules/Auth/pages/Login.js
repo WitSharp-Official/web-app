@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, shallowEqual, connect, useDispatch } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
@@ -25,6 +25,10 @@ function Login(props) {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(authActions.checkCurrentUser());
+  }, [dispatch]);
+
   const loginWithGoogle = () => {
     dispatch(authActions.loginWithGoogle());
   };
@@ -45,7 +49,10 @@ function Login(props) {
       </div>
       {/* end::Head */}
       <div className="row center mt-5 mb-3">
-        <div className="login-icon col shadow" onClick={loginWithGoogle}>
+        <div
+          className={`login-icon col shadow ${loading && "disabled"}`}
+          onClick={!loading && loginWithGoogle}
+        >
           <span className="svg-icon svg-icon-lg svg-icon-white">
             <SVG
               className="svg"
@@ -53,7 +60,11 @@ function Login(props) {
             />
           </span>
         </div>
-        <div className="login-icon col shadow" onClick={loginWithFacebook}>
+        <div
+          className={`login-icon col shadow ${loading && "disabled"}`}
+          disabled={true}
+          onClick={!loading && loginWithFacebook}
+        >
           <span className="svg-icon svg-icon-lg svg-icon-white">
             <SVG
               className="svg"
@@ -135,3 +146,12 @@ function Login(props) {
 }
 
 export default injectIntl(Login);
+
+// emailVerified(pin):true
+// role(pin):"user"
+// photoURL(pin):"https://lh3.googleusercontent.com/a-/AOh14GhevP172MqHuo4QPvBwvaBdzlwuyenQavW3y7xQ=s96-c"
+// displayName(pin):"rishabh malik"
+// email(pin):"rishabhmalik759@gmail.com"
+// uid(pin):"8DNTtYeLYvOA7Cthcr4G0xN1utx1"
+// phoneNumber(pin):null
+// currentTrainers(pin):

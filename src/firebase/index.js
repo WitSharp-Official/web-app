@@ -8,10 +8,12 @@ import "firebase/auth";
 
 const myFirebase = firebase.initializeApp(firebaseConfig);
 const firestoreDB = firebase.firestore();
+
 const googleAuth = new firebase.auth.GoogleAuthProvider();
+const facebookAuth = new firebase.auth.FacebookAuthProvider();
+
 googleAuth.addScope("profile");
 googleAuth.addScope("email");
-// const facebookAuth = new firebase.auth.FacebookAuthProvider();
 // const twitterAuth = new firebase.auth.TwitterAuthProvider();
 
 // myFirebase.firestore().settings({
@@ -37,4 +39,4 @@ myFirebase
   });
 //database
 // rsf.firestore.
-export { googleAuth, myFirebase, firestoreDB };
+export { googleAuth, myFirebase, firestoreDB, facebookAuth };

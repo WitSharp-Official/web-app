@@ -3,7 +3,6 @@ import { useSelector, shallowEqual, connect, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { injectIntl } from "react-intl";
-import * as auth from "../_redux/authRedux";
 import { authActions } from "../../../store/actions/authActions";
 import { useForm } from "react-hook-form";
 
@@ -83,4 +82,4 @@ function ForgotPassword(props) {
   );
 }
 
-export default injectIntl(connect(null, auth.actions)(ForgotPassword));
+export default injectIntl(ForgotPassword);

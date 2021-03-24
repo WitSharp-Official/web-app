@@ -2,12 +2,14 @@
  * Entry application component used to compose providers and render Routes.
  * */
 
-import React from "react";
-import { Provider } from "react-redux";
+import React, { useEffect } from "react";
+import { Provider, useDispatch } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { Routes } from "../app/Routes";
 import { I18nProvider } from "../_metronic/i18n";
 import { LayoutSplashScreen, MaterialThemeProvider } from "../_metronic/layout";
+import { authActions } from "./store/actions/authActions";
+import Alerts from "./modules/Alert/list";
 
 export default function App({ store, basename }) {
   return (
@@ -22,6 +24,7 @@ export default function App({ store, basename }) {
           <MaterialThemeProvider>
             {/* Provide `react-intl` context synchronized with Redux state.  */}
             <I18nProvider>
+              <Alerts />
               {/* Render routes with provided `Layout`. */}
               <Routes />
             </I18nProvider>

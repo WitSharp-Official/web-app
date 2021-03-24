@@ -24,7 +24,7 @@ export function HeaderMobile() {
         {...layoutProps.headerMobileAttributes}
       >
         {/* begin::Logo */}
-        <div className="p-2">
+        <div>
           <Brand />
           {/* end::Logo */}
         </div>

@@ -129,6 +129,23 @@
     background-color: #bbd9ee;
     border: 1px solid #007dd1;
   }
+  &.disabled {
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    position: relative;
+    // top: 0;
+    // left: 0;
+    // right: 0;
+    // bottom: 0;
+    background-color: rgb(175, 175, 175); /* Black background with opacity */
+    z-index: 10; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: auto;
+    &:hover {
+      transition-duration: none;
+      background-color: none;
+      border: 1px solid #fff;
+    }
+  }
 }
 
 .center {

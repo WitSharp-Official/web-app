@@ -13,5 +13,11 @@ export const authActionTypes = {
   EnableLoading: "auth/enableLoading",
   DisableLoading: "auth/disableLoading",
   SetError: "auth/setError",
-  RemoveError: "auth/removeError"
+  RemoveError: "auth/removeError",
+  CheckCurrentUser: "auth/checkCurrentUser"
+};
+
+export const alertActionTypes = {
+  SetAlert: "alert/setAlert",
+  RemoveAlert: "alert/removeAlert"
 };

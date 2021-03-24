@@ -25,14 +25,7 @@ const loginWithGoogle = () => ({
  * @return {action} LoginWithFacebook action.
  */
 const loginWithFacebook = () => ({
-  type: authActionTypes.LoginWithGoogle
-});
-/**
- * Auth Action to login user with (microsoft sign in), payload is not required, action is caught by authSaga
- * @return {action} LoginWithMicrosoft action.
- */
-const loginWithMicrosoft = () => ({
-  type: authActionTypes.LoginWithMicrosoft
+  type: authActionTypes.LoginWithFacebook
 });
 
 /**
@@ -51,16 +44,6 @@ const setUser = payload => ({
  */
 const logoutUser = () => ({
   type: authActionTypes.LogoutUser
-});
-
-/**
- * Auth Action to register a new user, action is caught by authSaga
- * @param  {RegistrationFormFields}  payload payload contains registration form values required to register a new user
- * @return {action} Register action.
- */
-const registerUser = payload => ({
-  type: authActionTypes.RegisterUser,
-  payload: payload
 });
 
 /**
@@ -130,6 +113,15 @@ const removeError = () => ({
   type: authActionTypes.RemoveError
 });
 
+/**
+ * Auth Action to request authenticated user profile and info from firestore, action is caught by authSaga
+ * @param  {email}  payload payload contains user id (uid) of the authenticated user
+ * @return {action} ForgotPassword action.
+ */
+const checkCurrentUser = () => ({
+  type: authActionTypes.CheckCurrentUser
+});
+
 //authActions is the main export that combines all the authActions together, action is caught by authSaga
 export const authActions = {
   loginWithFacebook,
@@ -137,13 +129,12 @@ export const authActions = {
   loginWithGoogle,
   setUser,
   logoutUser,
-  registerUser,
   requestUser,
-  loginWithMicrosoft,
   forgotPassword,
   createUserWithEmail,
   enableLoading,
   disableLoading,
   setError,
-  removeError
+  removeError,
+  checkCurrentUser
 };

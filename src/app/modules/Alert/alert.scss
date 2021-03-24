@@ -1,0 +1,38 @@
+.alert-style {
+  color: white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.3);
+  width: 300px;
+  box-sizing: border-box;
+  font-size: 11px;
+  position: fixed;
+  bottom: 20px;
+  z-index: 100;
+  &.success {
+    background-color: rgb(31, 102, 43);
+  }
+  &.error {
+    background-color: rgb(121, 28, 28);
+  }
+  &.info {
+    background-color: #333;
+  }
+}
+
+@media (max-width: 650px) {
+  .alert-style {
+    bottom: 20px !important;
+    left: 10%;
+    position: fixed;
+  }
+}
+.alert-list {
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  width: 100vw; //todo
+  display: flex;
+}

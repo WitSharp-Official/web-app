@@ -6,13 +6,17 @@ import * as Yup from "yup";
 import { ModalProgressBar } from "../../../_metronic/_partials/controls";
 import { toAbsoluteUrl } from "../../../_metronic/_helpers";
 import * as auth from "../Auth";
+import { useForm } from "react-hook-form";
 
 function PersonaInformation(props) {
   // Fields
-  const [loading, setloading] = useState(false);
   const [pic, setPic] = useState("");
   const dispatch = useDispatch();
-  const user = useSelector(state => state.auth.user, shallowEqual);
+  const { register, handleSubmit, errors } = useForm();
+  const { loading, error, user } = useSelector(
+    state => state.auth,
+    shallowEqual
+  );
   useEffect(() => {
     if (user.pic) {
       setPic(user.pic);
@@ -20,12 +24,10 @@ function PersonaInformation(props) {
   }, [user]);
   // Methods
   const saveUser = (values, setStatus, setSubmitting) => {
-    setloading(true);
     const updatedUser = Object.assign(user, values);
     // user for update preparation
     dispatch(props.setUser(updatedUser));
     setTimeout(() => {
-      setloading(false);
       setSubmitting(false);
       // Do request to your server for user update, we just imitate user update there, For example:
       // update(updatedUser)
@@ -145,14 +147,12 @@ function PersonaInformation(props) {
                 className="image-input image-input-outline"
                 id="kt_profile_avatar"
                 style={{
-                  backgroundImage: `url(${toAbsoluteUrl(
-                    "/media/users/blank.png"
-                  )}`
+                  backgroundImage: `url(${user.photoURL}`
                 }}
               >
                 <div
                   className="image-input-wrapper"
-                  style={{ backgroundImage: `${getUserPic()}` }}
+                  style={{ backgroundImage: `${user.photoURL}` }}
                 />
                 <label
                   className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
@@ -164,11 +164,11 @@ function PersonaInformation(props) {
                   <i className="fa fa-pen icon-sm text-muted"></i>
                   <input
                     type="file"
-                    // name="pic"
+                    name="photoURL"
                     accept=".png, .jpg, .jpeg"
-                    // {...formik.getFieldProps("pic")}
+                    ref={register()}
                   />
-                  <input type="hidden" name="profile_avatar_remove" />
+                  {/* <input type="hidden" name="profile_avatar_remove" /> */}
                 </label>
                 <span
                   className="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
@@ -197,62 +197,25 @@ function PersonaInformation(props) {
           </div>
           <div className="form-group row">
             <label className="col-xl-3 col-lg-3 col-form-label">
-              First Name
+              Display Name
             </label>
             <div className="col-lg-9 col-xl-6">
               <input
                 type="text"
-                placeholder="First name"
-                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                  "firstname"
-                )}`}
-                name="firstname"
-                {...formik.getFieldProps("firstname")}
+                placeholder={user.displayName}
+                name="displayName"
+                className={`form-control form-control-lg form-control-solid ${errors.displayName &&
+                  "is-invalid"}`}
+                ref={register({ required: true })}
               />
-              {formik.touched.firstname && formik.errors.firstname ? (
-                <div className="invalid-feedback">
-                  {formik.errors.firstname}
+              {errors.displayName && (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">Display Name is required*</div>
                 </div>
-              ) : null}
+              )}
             </div>
           </div>
-          <div className="form-group row">
-            <label className="col-xl-3 col-lg-3 col-form-label">
-              Last Name
-            </label>
-            <div className="col-lg-9 col-xl-6">
-              <input
-                type="text"
-                placeholder="Last name"
-                className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                  "lastname"
-                )}`}
-                name="lastname"
-                {...formik.getFieldProps("lastname")}
-              />
-              {formik.touched.lastname && formik.errors.lastname ? (
-                <div className="invalid-feedback">{formik.errors.lastname}</div>
-              ) : null}
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-xl-3 col-lg-3 col-form-label">
-              Company Name
-            </label>
-            <div className="col-lg-9 col-xl-6">
-              <input
-                type="text"
-                placeholder="Company name"
-                className={`form-control form-control-lg form-control-solid`}
-                name="companyName"
-                {...formik.getFieldProps("companyName")}
-              />
-              <span className="form-text text-muted">
-                If you want your invoices addressed to a company. Leave blank to
-                use your full name.
-              </span>
-            </div>
-          </div>
+
           <div className="row">
             <label className="col-xl-3"></label>
             <div className="col-lg-9 col-xl-6">
@@ -272,19 +235,22 @@ function PersonaInformation(props) {
                 </div>
                 <input
                   type="text"
-                  placeholder="+1(123)112-11-11"
-                  className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                    "phone"
-                  )}`}
-                  name="phone"
-                  {...formik.getFieldProps("phone")}
+                  placeholder={user.phoneNumber}
+                  className={`form-control form-control-lg form-control-solid ${errors.phoneNumber &&
+                    "is-invalid"}`}
+                  name="phoneNumber"
+                  ref={register({
+                    pattern: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/g
+                  })}
                 />
               </div>
-              {formik.touched.phone && formik.errors.phone ? (
-                <div className="invalid-feedback display-block">
-                  {formik.errors.phone}
+              {errors.phoneNumber && (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    Please enter a valid phone number*
+                  </div>
                 </div>
-              ) : null}
+              )}
               <span className="form-text text-muted">
                 We'll never share your phone with anyone else.
               </span>
@@ -303,40 +269,50 @@ function PersonaInformation(props) {
                 </div>
                 <input
                   type="email"
-                  placeholder="Email"
-                  className={`form-control form-control-lg form-control-solid ${getInputClasses(
-                    "email"
-                  )}`}
+                  placeholder={user.email}
+                  className={`form-control form-control-lg form-control-solid ${errors.email &&
+                    "is-invalid"}`}
                   name="email"
-                  {...formik.getFieldProps("email")}
+                  ref={register({
+                    required: true,
+                    pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                  })}
                 />
               </div>
-              {formik.touched.email && formik.errors.email ? (
-                <div className="invalid-feedback display-block">
-                  {formik.errors.email}
+              {errors.phoneNumber && (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    Please enter a valid email*
+                  </div>
                 </div>
-              ) : null}
+              )}
             </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-xl-3 col-lg-3 col-form-label">
-              Company Site
-            </label>
             <div className="col-lg-9 col-xl-6">
               <div className="input-group input-group-lg input-group-solid">
+                <div className="input-group-prepend">
+                  <span className="input-group-text">
+                    <i className="fa fa-at"></i>
+                  </span>
+                </div>
                 <input
-                  type="text"
-                  placeholder="https://keenthemes.com"
-                  className={`form-control form-control-lg form-control-solid`}
-                  name="website"
-                  {...formik.getFieldProps("website")}
+                  type="status"
+                  placeholder={user.email}
+                  className={`form-control form-control-lg form-control-solid ${errors.email &&
+                    "is-invalid"}`}
+                  name="email"
+                  ref={register({
+                    required: true,
+                    pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                  })}
                 />
               </div>
-              {formik.touched.website && formik.errors.website ? (
-                <div className="invalid-feedback display-block">
-                  {formik.errors.website}
+              {errors.phoneNumber && (
+                <div className="fv-plugins-message-container">
+                  <div className="fv-help-block">
+                    Please enter a valid email*
+                  </div>
                 </div>
-              ) : null}
+              )}
             </div>
           </div>
         </div>
